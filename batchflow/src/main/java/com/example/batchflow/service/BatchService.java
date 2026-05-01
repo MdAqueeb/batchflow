@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
@@ -119,7 +120,7 @@ public class BatchService {
         BatchInvite invite = BatchInvite.builder()
                 .batch(batch)
                 .token(UUID.randomUUID().toString().replace("-", ""))
-                .expiresAt(LocalDateTime.now().plusHours(hours))
+                .expiresAt(LocalDateTime.now(ZoneId.of("Asia/Kolkata")).plusHours(hours))
                 .isActive(true)
                 .build();
         return Mappers.toInviteResponse(batchInviteRepository.save(invite));
@@ -134,7 +135,7 @@ public class BatchService {
         if (Boolean.FALSE.equals(invite.getIsActive())) {
             throw new BadRequestException("Invite inactive");
         }
-        if (invite.getExpiresAt().isBefore(LocalDateTime.now())) {
+        if (invite.getExpiresAt().isBefore(LocalDateTime.now(ZoneId.of("Asia/Kolkata")))) {
             invite.setIsActive(false);
             batchInviteRepository.save(invite);
             throw new BadRequestException("Invite expired");

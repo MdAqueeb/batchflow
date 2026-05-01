@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,8 +43,8 @@ public class AttendanceService {
 
         UUID studentId;
         if (actor.getRole() == Role.STUDENT) {
-            LocalDate today = LocalDate.now();
-            LocalTime now = LocalTime.now();
+            LocalDate today = LocalDate.now(ZoneId.of("Asia/Kolkata"));
+            LocalTime now = LocalTime.now(ZoneId.of("Asia/Kolkata"));
             if (!session.getDate().equals(today)
                     || now.isBefore(session.getStartTime())
                     || now.isAfter(session.getEndTime())) {
@@ -79,7 +80,7 @@ public class AttendanceService {
                         .student(student)
                         .build());
         att.setStatus(req.getStatus());
-        att.setMarkedAt(LocalDateTime.now());
+        att.setMarkedAt(LocalDateTime.now(ZoneId.of("Asia/Kolkata")));
 
         return Mappers.toAttendanceResponse(attendanceRepository.save(att));
     }
